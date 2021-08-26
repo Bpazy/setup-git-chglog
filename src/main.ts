@@ -2,8 +2,6 @@ import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import * as installer from './installer'
 
-import path from 'path'
-
 export async function run(): Promise<void> {
   try {
     //
