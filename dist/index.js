@@ -75,7 +75,6 @@ function getGitChglog(versionSpec, stable, auth) {
                 core.info(err.message);
             }
             core.debug(err.stack);
-            core.info('Falling back to download directly from git-chglog');
         }
         return downloadPath;
     });
@@ -85,6 +84,7 @@ function getInfoFromManifest(versionSpec, stable, auth) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`matching ${versionSpec}...`);
         let info = null;
+        core.debug(`tc.getManifestFromRepo auth: ${auth}`);
         const releases = yield tc.getManifestFromRepo('git-chglog', 'git-chglog', auth, 'master');
         core.debug(`tc.getManifestFromRepo: ${releases}`);
         const rel = yield tc.findFromManifest(versionSpec, stable, releases);

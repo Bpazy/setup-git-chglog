@@ -43,7 +43,6 @@ export async function getGitChglog(versionSpec: string, stable: boolean, auth: s
       core.info(err.message)
     }
     core.debug(err.stack)
-    core.info('Falling back to download directly from git-chglog')
   }
 
   return downloadPath
@@ -57,6 +56,7 @@ export async function getInfoFromManifest(
   core.info(`matching ${versionSpec}...`)
 
   let info: IGitChglogVersionInfo | null = null
+  core.debug(`tc.getManifestFromRepo auth: ${auth}`)
   const releases = await tc.getManifestFromRepo('git-chglog', 'git-chglog', auth, 'master')
   core.debug(`tc.getManifestFromRepo: ${releases}`)
   const rel = await tc.findFromManifest(versionSpec, stable, releases)
