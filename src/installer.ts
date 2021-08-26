@@ -54,10 +54,13 @@ export async function getInfoFromManifest(
   stable: boolean,
   auth: string | undefined
 ): Promise<IGitChglogVersionInfo | null> {
+  core.info(`matching ${versionSpec}...`)
+
   let info: IGitChglogVersionInfo | null = null
   const releases = await tc.getManifestFromRepo('git-chglog', 'git-chglog', auth, 'master')
-  core.info(`matching ${versionSpec}...`)
+  core.debug(`tc.getManifestFromRepo: ${releases}`)
   const rel = await tc.findFromManifest(versionSpec, stable, releases)
+  core.debug(`tc.findFromManifest: ${rel}`)
 
   if (rel && rel.files.length > 0) {
     info = {} as IGitChglogVersionInfo
