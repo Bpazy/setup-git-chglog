@@ -35,43 +35,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getInfoFromManifest = async function(versionSpec: string): Promise<string> {
-    return await installGitChglogVersion(versionSpec)
-} = void 0;
+exports.installGitChglogVersion = void 0;
 const core = __importStar(__nccwpck_require__(186));
 const tc = __importStar(__nccwpck_require__(784));
-function getGitChglog(versionSpec) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return yield installGitChglogVersion(versionSpec);
-    });
-}
-
-            async function(versionSpec: string): Promise<string> {
-                return await installGitChglogVersion(versionSpec)
-            } = getGitChglog;
-function getInfoFromManifest(versionSpec, stable, auth) {
-    return __awaiter(this, void 0, void 0, function* () {
-        core.info(`matching ${versionSpec}...`);
-        let info = null;
-        core.debug(`tc.getManifestFromRepo auth: ${auth}`);
-        const releases = yield tc.getManifestFromRepo('git-chglog', 'git-chglog', auth, 'master');
-        core.debug(`tc.getManifestFromRepo: ${releases}`);
-        const rel = yield tc.findFromManifest(versionSpec, stable, releases);
-        core.debug(`tc.findFromManifest: ${rel}`);
-        if (rel && rel.files.length > 0) {
-            info = {};
-            info.type = 'manifest';
-            info.resolvedVersion = rel.version;
-            info.downloadUrl = rel.files[0].download_url;
-            info.fileName = rel.files[0].filename;
-        }
-        return info;
-    });
-}
-exports.getInfoFromManifest = getInfoFromManifest;
 function installGitChglogVersion(versionSpec) {
     return __awaiter(this, void 0, void 0, function* () {
-        const downloadUrl = 'https://github.com/git-chglog/git-chglog/releases/download/v0.15.0/git-chglog_0.15.0_linux_amd64.tar.gz';
+        const downloadUrl = `https://github.com/git-chglog/git-chglog/releases/download/v${versionSpec}/git-chglog_${versionSpec}_linux_amd64.tar.gz`;
         core.info(`Acquiring ${versionSpec} from ${downloadUrl}`);
         const downloadPath = yield tc.downloadTool(downloadUrl);
         core.info('Extracting git-chglog...');
@@ -83,6 +52,7 @@ function installGitChglogVersion(versionSpec) {
         return cachedDir;
     });
 }
+exports.installGitChglogVersion = installGitChglogVersion;
 
 
 /***/ }),
@@ -126,6 +96,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core = __importStar(__nccwpck_require__(186));
+const exec = __importStar(__nccwpck_require__(514));
 const installer = __importStar(__nccwpck_require__(480));
 const path_1 = __importDefault(__nccwpck_require__(622));
 function run() {
@@ -135,13 +106,15 @@ function run() {
             // versionSpec is optional.  If supplied, install / use from the tool cache
             // If not supplied then problem matchers will still be setup.  Useful for self-hosted.
             //
-            const versionSpec = core.getInput('git-chglog-version');
-            if (versionSpec) {
-                const installDir = yield installer.getGitChglog(versionSpec);
-                core.addPath(path_1.default.join(installDir, 'bin'));
-                core.info('Added git-chglog to the path');
-                core.info(`Successfully setup git-chglog version ${versionSpec}`);
+            let versionSpec = core.getInput('git-chglog-version');
+            if (!versionSpec) {
+                versionSpec = '0.15.0';
             }
+            const installDir = yield installer.installGitChglogVersion(versionSpec);
+            core.addPath(path_1.default.join(installDir, 'bin'));
+            core.info('Added git-chglog to the path');
+            yield exec.exec('git-chglog --version');
+            core.info(`Successfully setup git-chglog version ${versionSpec}`);
         }
         catch (error) {
             core.setFailed(error.message);
@@ -5494,7 +5467,7 @@ module.exports = require("util");
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
-/******/
+/******/ 	
 /******/ 	// The require function
 /******/ 	function __nccwpck_require__(moduleId) {
 /******/ 		// Check if module is in cache
@@ -5508,7 +5481,7 @@ module.exports = require("util");
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
-/******/
+/******/ 	
 /******/ 		// Execute the module function
 /******/ 		var threw = true;
 /******/ 		try {
@@ -5517,16 +5490,16 @@ module.exports = require("util");
 /******/ 		} finally {
 /******/ 			if(threw) delete __webpack_module_cache__[moduleId];
 /******/ 		}
-/******/
+/******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/
+/******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat */
-/******/
+/******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
-/******/
+/******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
