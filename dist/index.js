@@ -83,10 +83,12 @@ function getGitChglog(versionSpec, stable, auth) {
 exports.getGitChglog = getGitChglog;
 function getInfoFromManifest(versionSpec, stable, auth) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.info(`matching ${versionSpec}...`);
         let info = null;
         const releases = yield tc.getManifestFromRepo('git-chglog', 'git-chglog', auth, 'master');
-        core.info(`matching ${versionSpec}...`);
+        core.debug(`tc.getManifestFromRepo: ${releases}`);
         const rel = yield tc.findFromManifest(versionSpec, stable, releases);
+        core.debug(`tc.findFromManifest: ${rel}`);
         if (rel && rel.files.length > 0) {
             info = {};
             info.type = 'manifest';
