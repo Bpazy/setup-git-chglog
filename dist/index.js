@@ -188,9 +188,7 @@ function run() {
             const stable = (core.getInput('stable') || 'true').toUpperCase() === 'TRUE';
             core.info(`Setup git-chglog ${stable ? 'stable' : ''} version spec ${versionSpec}`);
             if (versionSpec) {
-                const token = core.getInput('token');
-                const auth = !token ? undefined : `token ${token}`;
-                const installDir = yield installer.getGitChglog(versionSpec, stable, auth);
+                const installDir = yield installer.getGitChglog(versionSpec, stable, undefined);
                 core.addPath(path_1.default.join(installDir, 'bin'));
                 core.info('Added git-chglog to the path');
                 core.info(`Successfully setup git-chglog version ${versionSpec}`);
