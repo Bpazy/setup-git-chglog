@@ -34,49 +34,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.extractGitChglogArchive = exports.getInfoFromManifest = exports.getGitChglog = void 0;
+exports.getInfoFromManifest = exports.getGitChglog = void 0;
 const core = __importStar(__nccwpck_require__(186));
 const tc = __importStar(__nccwpck_require__(784));
-const os_1 = __importDefault(__nccwpck_require__(87));
-const path_1 = __importDefault(__nccwpck_require__(622));
-function getGitChglog(versionSpec, stable, auth) {
+function getGitChglog(versionSpec) {
     return __awaiter(this, void 0, void 0, function* () {
-        // check cache
-        const toolPath = tc.find('git-chglog', versionSpec);
-        // If not found in cache, download
-        if (toolPath) {
-            core.info(`Found in cache @ ${toolPath}`);
-            return toolPath;
-        }
-        core.info(`Attempting to download ${versionSpec}...`);
-        let downloadPath = '';
-        let info = null;
-        //
-        // Try download from internal distribution (popular versions only)
-        //
-        try {
-            info = yield getInfoFromManifest(versionSpec, stable, auth);
-            if (info) {
-                downloadPath = yield installGitChglogVersion(info, auth);
-            }
-            else {
-                core.info('Not found in manifest.  Falling back to download directly from git-chglog');
-            }
-        }
-        catch (err) {
-            if (err instanceof tc.HTTPError && (err.httpStatusCode === 403 || err.httpStatusCode === 429)) {
-                core.info(`Received HTTP status code ${err.httpStatusCode}.  This usually indicates the rate limit has been exceeded`);
-            }
-            else {
-                core.info(err.message);
-            }
-            core.debug(err.stack);
-        }
-        return downloadPath;
+        return yield installGitChglogVersion(versionSpec);
     });
 }
 exports.getGitChglog = getGitChglog;
@@ -100,36 +64,20 @@ function getInfoFromManifest(versionSpec, stable, auth) {
     });
 }
 exports.getInfoFromManifest = getInfoFromManifest;
-function installGitChglogVersion(info, auth) {
+function installGitChglogVersion(versionSpec) {
     return __awaiter(this, void 0, void 0, function* () {
-        core.info(`Acquiring ${info.resolvedVersion} from ${info.downloadUrl}`);
-        const downloadPath = yield tc.downloadTool(info.downloadUrl, undefined, auth);
+        const downloadUrl = 'https://github.com/git-chglog/git-chglog/releases/download/v0.15.0/git-chglog_0.15.0_linux_amd64.tar.gz';
+        core.info(`Acquiring ${versionSpec} from ${downloadUrl}`);
+        const downloadPath = yield tc.downloadTool(downloadUrl);
         core.info('Extracting git-chglog...');
-        let extPath = yield extractGitChglogArchive(downloadPath);
+        const extPath = yield tc.extractTar(downloadPath);
         core.info(`Successfully extracted git-chglog to ${extPath}`);
-        if (info.type === 'dist') {
-            extPath = path_1.default.join(extPath, 'git-chglog');
-        }
         core.info('Adding to the cache ...');
-        const cachedDir = yield tc.cacheDir(extPath, 'git-chglog', info.resolvedVersion);
+        const cachedDir = yield tc.cacheDir(extPath, 'git-chglog', versionSpec);
         core.info(`Successfully cached git-chglog to ${cachedDir}`);
         return cachedDir;
     });
 }
-function extractGitChglogArchive(archivePath) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const platform = os_1.default.platform();
-        let extPath;
-        if (platform === 'win32') {
-            extPath = yield tc.extractZip(archivePath);
-        }
-        else {
-            extPath = yield tc.extractTar(archivePath);
-        }
-        return extPath;
-    });
-}
-exports.extractGitChglogArchive = extractGitChglogArchive;
 
 
 /***/ }),
@@ -183,12 +131,8 @@ function run() {
             // If not supplied then problem matchers will still be setup.  Useful for self-hosted.
             //
             const versionSpec = core.getInput('git-chglog-version');
-            // stable will be true unless false is the exact input
-            // since getting unstable versions should be explicit
-            const stable = (core.getInput('stable') || 'true').toUpperCase() === 'TRUE';
-            core.info(`Setup git-chglog ${stable ? 'stable' : ''} version spec ${versionSpec}`);
             if (versionSpec) {
-                const installDir = yield installer.getGitChglog(versionSpec, stable, undefined);
+                const installDir = yield installer.getGitChglog(versionSpec);
                 core.addPath(path_1.default.join(installDir, 'bin'));
                 core.info('Added git-chglog to the path');
                 core.info(`Successfully setup git-chglog version ${versionSpec}`);
