@@ -17,7 +17,7 @@ export async function run(): Promise<void> {
 
     const installDir = await installer.installGitChglogVersion(versionSpec)
 
-    core.addPath(path.join(installDir, 'bin'))
+    core.addPath(installDir)
     core.info('Added git-chglog to the path')
 
     await exec.exec('git-chglog --version')
