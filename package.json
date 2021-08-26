@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "description": "TypeScript template action",
-  "main": "lib/setup-git-ghglog.js",
+  "main": "lib/setup-git-chglog.js",
   "scripts": {
     "build": "tsc",
     "format": "prettier --write **/*.ts",

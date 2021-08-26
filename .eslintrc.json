@@ -49,7 +49,7 @@
       "@typescript-eslint/type-annotation-spacing": "error",
       "@typescript-eslint/unbound-method": "error",
       "prettier/prettier": [
-        "error",
+        "warn",
         {
           "endOfLine": "auto",
           "printWidth": 120
@@ -57,7 +57,7 @@
       ],
       "i18n-text/no-en": "off",
       "max-len": [
-        "error",
+        "warn",
         {
           "code": 160
         }
