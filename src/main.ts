@@ -1,19 +1,34 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import * as installer from './installer'
 
-async function run(): Promise<void> {
+import path from 'path'
+
+export async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+    //
+    // versionSpec is optional.  If supplied, install / use from the tool cache
+    // If not supplied then problem matchers will still be setup.  Useful for self-hosted.
+    //
+    const versionSpec = core.getInput('git-chglog-version')
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    // stable will be true unless false is the exact input
+    // since getting unstable versions should be explicit
+    const stable = (core.getInput('stable') || 'true').toUpperCase() === 'TRUE'
 
-    core.setOutput('time', new Date().toTimeString())
+    core.info(`Setup git-chglog ${stable ? 'stable' : ''} version spec ${versionSpec}`)
+
+    if (versionSpec) {
+      const token = core.getInput('token')
+      const auth = !token ? undefined : `token ${token}`
+
+      const installDir = await installer.getGitChglog(versionSpec, stable, auth)
+
+      core.addPath(path.join(installDir, 'bin'))
+      core.info('Added git-chglog to the path')
+
+      core.info(`Successfully setup git-chglog version ${versionSpec}`)
+    }
   } catch (error) {
     core.setFailed(error.message)
   }
 }
-
-run()
