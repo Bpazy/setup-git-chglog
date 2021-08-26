@@ -35,7 +35,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getInfoFromManifest = exports.getGitChglog = void 0;
+exports.getInfoFromManifest = async function(versionSpec: string): Promise<string> {
+    return await installGitChglogVersion(versionSpec)
+} = void 0;
 const core = __importStar(__nccwpck_require__(186));
 const tc = __importStar(__nccwpck_require__(784));
 function getGitChglog(versionSpec) {
@@ -43,7 +45,10 @@ function getGitChglog(versionSpec) {
         return yield installGitChglogVersion(versionSpec);
     });
 }
-exports.getGitChglog = getGitChglog;
+
+            async function(versionSpec: string): Promise<string> {
+                return await installGitChglogVersion(versionSpec)
+            } = getGitChglog;
 function getInfoFromManifest(versionSpec, stable, auth) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`matching ${versionSpec}...`);
@@ -5489,7 +5494,7 @@ module.exports = require("util");
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
-/******/ 	
+/******/
 /******/ 	// The require function
 /******/ 	function __nccwpck_require__(moduleId) {
 /******/ 		// Check if module is in cache
@@ -5503,7 +5508,7 @@ module.exports = require("util");
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
-/******/ 	
+/******/
 /******/ 		// Execute the module function
 /******/ 		var threw = true;
 /******/ 		try {
@@ -5512,16 +5517,16 @@ module.exports = require("util");
 /******/ 		} finally {
 /******/ 			if(threw) delete __webpack_module_cache__[moduleId];
 /******/ 		}
-/******/ 	
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/ 	
+/******/
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat */
-/******/ 	
+/******/
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
-/******/ 	
+/******/
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
