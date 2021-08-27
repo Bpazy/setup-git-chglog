@@ -22,6 +22,12 @@ steps:
 - run: git-chglog --version
 ```
 
+# Development
+
+```
+npm run build | npm run package
+```
+
 # License
 
 The scripts and documentation in this project are released under the [MIT License](LICENSE)
