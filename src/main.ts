@@ -22,6 +22,8 @@ export async function run(): Promise<void> {
 
     core.info(`Successfully setup git-chglog version ${versionSpec}`)
   } catch (error) {
-    core.setFailed(error.message)
+    if (error instanceof Error) {
+      core.setFailed(error.message)
+    }
   }
 }

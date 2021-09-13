@@ -113,7 +113,9 @@ function run() {
             core.info(`Successfully setup git-chglog version ${versionSpec}`);
         }
         catch (error) {
-            core.setFailed(error.message);
+            if (error instanceof Error) {
+                core.setFailed(error.message);
+            }
         }
     });
 }
@@ -5535,7 +5537,7 @@ var exports = __webpack_exports__;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const main_1 = __nccwpck_require__(109);
-main_1.run();
+(0, main_1.run)();
 
 })();
 
