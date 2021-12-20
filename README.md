@@ -1,7 +1,7 @@
 # setup-git-chglog
 
 <p align="left">
-  <a href="https://github.com/actions/setup-git-chglog/actions"><img alt="GitHub Actions status" src="https://github.com/Bpazy/setup-git-chglog/workflows/build-test/badge.svg"></a>
+  <a href="https://github.com/Bpazy/setup-git-chglog/actions"><img alt="GitHub Actions status" src="https://github.com/Bpazy/setup-git-chglog/workflows/build-test/badge.svg"></a>
 </p>
 
 This action sets up a git-chglog environment for use in actions by:
