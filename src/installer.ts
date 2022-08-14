@@ -1,9 +1,7 @@
 import * as core from '@actions/core'
 import * as tc from '@actions/tool-cache'
 
-export async function installGitChglogVersion(
-  versionSpec: string
-): Promise<string> {
+export async function installGitChglogVersion(versionSpec: string): Promise<string> {
   const downloadUrl = `https://github.com/git-chglog/git-chglog/releases/download/v${versionSpec}/git-chglog_${versionSpec}_linux_amd64.tar.gz`
   core.info(`Acquiring ${versionSpec} from ${downloadUrl}`)
   const downloadPath = await tc.downloadTool(downloadUrl)
